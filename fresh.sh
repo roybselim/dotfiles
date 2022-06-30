@@ -19,6 +19,8 @@ fi
 rm -rf $HOME/.zshrc
 ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
 
+export DOTFILES=$HOME/.dotfiles
+
 # Update Homebrew recipes
 brew update
 
@@ -27,31 +29,26 @@ brew tap homebrew/bundle
 brew bundle --file $DOTFILES/Brewfile
 
 # Set default MySQL root password and auth type
-mysql -u root -e "ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password'; FLUSH PRIVILEGES;"
 
 # Install PHP extensions with PECL
-pecl install imagick redis swoole
 
-# Install global Composer packages
-/usr/local/bin/composer global require laravel/installer laravel/valet beyondcode/expose spatie/global-ray spatie/visit
+# Set global git ignore
+git config --global core.excludesfile $DOTFILES/.gitignore_global
 
-# Install Laravel Valet
-$HOME/.composer/vendor/bin/valet install
-
-# Install Global Ray
-$HOME/.composer/vendor/bin/global-ray install
-
-# Create a Sites directory
-mkdir $HOME/Sites
-
-# Create sites subdirectories
-mkdir $HOME/Sites/blade-ui-kit
-mkdir $HOME/Sites/laravel
+# Create a Code directory
+mkdir $HOME/Code
 
 # Clone Github repositories
 $DOTFILES/clone.sh
 
+
+# Install Rosetta so webpack can send notifications on M1 Macs.
+softwareupdate --install-rosetta
+
+
+
 # Symlink the Mackup config file to the home directory
+rm -rf $HOME/.mackup.cfg
 ln -s $DOTFILES/.mackup.cfg $HOME/.mackup.cfg
 
 # Set macOS preferences - we will run this last because this will reload the shell
